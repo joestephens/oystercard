@@ -2,6 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 
+  let(:min_fare) { described_class::MIN_FARE }
+
   describe '#initialize' do
     it 'is initially not in use' do
       expect(subject).not_to be_in_journey
@@ -31,8 +33,14 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'changes card to in-use' do
+      subject.top_up(min_fare)
       subject.touch_in
       expect(subject).to be_in_journey
+    end
+
+    it 'raises error if balance is less than minimum fare' do
+      subject.top_up(min_fare - 1)
+      expect{subject.touch_in}.to raise_error(RuntimeError, "Balance is below minimum fare.")
     end
   end
 
