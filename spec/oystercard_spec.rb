@@ -7,7 +7,7 @@ describe Oystercard do
       expect(subject.balance).to eq(0)
     end
   end
-  
+
   describe '#top_up' do
     it 'allows for topping up 10 onto card' do
       subject.top_up(10)
@@ -18,6 +18,13 @@ describe Oystercard do
       max_limit = described_class::LIMIT
       subject.top_up(max_limit)
       expect{subject.top_up(1)}.to raise_error(RuntimeError,"Card is at its limit of #{max_limit}.")
+    end
+  end
+
+  describe '#deduct' do
+    it 'allows for deduction of money' do
+      subject.top_up(50)
+      expect{subject.deduct(3)}.to change{subject.balance}.by -3
     end
   end
 end
