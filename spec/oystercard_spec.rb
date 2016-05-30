@@ -24,13 +24,6 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'allows for deduction of money' do
-      subject.top_up(50)
-      expect{subject.deduct(3)}.to change{subject.balance}.by -3
-    end
-  end
-
   describe '#touch_in' do
     it 'changes card to in-use' do
       subject.top_up(min_fare)
@@ -48,6 +41,10 @@ describe Oystercard do
     it 'changes card to no longer in-use' do
       subject.touch_out
       expect(subject).not_to be_in_journey
+    end
+
+    it 'deducts fare from balance' do
+      expect{subject.touch_out}.to change{subject.balance}.by (-min_fare)
     end
   end
 end

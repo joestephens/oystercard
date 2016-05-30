@@ -27,6 +27,7 @@ class Oystercard
   end
 
   def touch_out
+    deduct
     @in_use = false
     in_journey?
   end
@@ -39,6 +40,10 @@ class Oystercard
 
   def at_limit?(money)
     balance+money > LIMIT
+  end
+
+  def deduct(money=MIN_FARE)
+    @balance -= money
   end
 
 end
