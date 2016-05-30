@@ -3,11 +3,17 @@ require 'oystercard'
 describe Oystercard do
 
   let(:station) { double(:station) }
+  let(:exit_station) { double(:exit_station) }
   let(:min_fare) { described_class::MIN_FARE }
+  let(:journey) { {:entry => station, :exit => exit_station} }
 
   describe '#initialize' do
     it 'is initially not in use' do
       expect(subject).not_to be_in_journey
+    end
+
+    it 'has an empty journey log' do
+      expect(subject.journey_log).to be_empty
     end
   end
 
@@ -26,39 +32,24 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-    it 'changes card to in-use' do
-      subject.top_up(min_fare)
-      subject.touch_in(station)
-      expect(subject).to be_in_journey
-    end
 
     it 'raises error if balance is less than minimum fare' do
       subject.top_up(min_fare - 1)
       expect{subject.touch_in(station)}.to raise_error(RuntimeError, "Balance is below minimum fare.")
     end
 
-    it 'remembers the entry station last used' do
+    it 'creates one journey when touching in and out' do
       subject.top_up(min_fare)
       subject.touch_in(station)
-      expect(subject.stations.last).to eq station
+      subject.touch_out(exit_station)
+      expect(subject.journey_log.last).to include(journey)
     end
   end
 
   describe '#touch_out' do
-    it 'changes card to no longer in-use' do
-      subject.touch_out
-      expect(subject).not_to be_in_journey
-    end
-
     it 'deducts fare from balance' do
-      expect{subject.touch_out}.to change{subject.balance}.by (-min_fare)
-    end
-    
-    it 'forgets last entry station that was used' do
-      subject.top_up(min_fare)
-      subject.touch_in(station)
-      subject.touch_out
-      expect(subject.stations.last).to be_nil 
+      expect{subject.touch_out(exit_station)}.to change{subject.balance}.by (-min_fare)
     end
   end
+
 end
