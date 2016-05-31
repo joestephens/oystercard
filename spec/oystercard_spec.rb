@@ -27,15 +27,14 @@ describe Oystercard do
     it "allows for topping up and doesn't allow topping up above its limit" do
       max_limit = described_class::LIMIT
       subject.top_up(max_limit)
-      expect{subject.top_up(1)}.to raise_error(RuntimeError,"Card is at its limit of #{max_limit}.")
+      expect{ subject.top_up(1) }.to raise_error(RuntimeError, "Card is at its limit of #{max_limit}.")
     end
   end
 
   describe '#touch_in' do
-
     it 'raises error if balance is less than minimum fare' do
       subject.top_up(min_fare - 1)
-      expect{subject.touch_in(station)}.to raise_error(RuntimeError, "Balance is below minimum fare.")
+      expect{ subject.touch_in(station) }.to raise_error(RuntimeError, "Balance is below minimum fare.")
     end
 
     it 'creates one journey when touching in and out' do
@@ -48,7 +47,7 @@ describe Oystercard do
 
   describe '#touch_out' do
     it 'deducts fare from balance' do
-      expect{subject.touch_out(exit_station)}.to change{subject.balance}.by (-min_fare)
+      expect{ subject.touch_out(exit_station) }.to change{subject.balance}.by(-min_fare)
     end
   end
 
