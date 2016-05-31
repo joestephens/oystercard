@@ -1,8 +1,8 @@
 require 'journey'
 
 describe Journey do
-  let(:station1) { double(:station1) }
-  let(:station2) { double(:station2) }
+  let(:station1) { double(:station1, zone: 1) }
+  let(:station2) { double(:station2, zone: 3) }
   subject(:journey) { described_class.new(station1) }
 
   it "takes an entry station" do
@@ -14,9 +14,9 @@ describe Journey do
     .to change { journey.exit_station }.to(station2)
   end
 
-  it "should return the minimum fare if journey completed" do
+  it "should return the correct fare when journey completed" do
     journey.finish(station2)
-    expect(journey.fare).to eq 1
+    expect(journey.fare).to eq 3
   end
 
   it "should return the penalty fare if journey incomplete" do
