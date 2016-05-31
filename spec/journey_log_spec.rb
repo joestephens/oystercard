@@ -4,6 +4,7 @@ describe JourneyLog do
 
   let(:station1) { double(:station1) }
   let(:station2) { double(:station2) }
+
   let(:journey) { double(:journey, start: nil, finish: nil, in_journey?: false, new: nil) }
   subject(:log) { described_class.new(journey) }
 
@@ -15,11 +16,10 @@ describe JourneyLog do
     expect(log).to respond_to(:finish)
   end
 
-  # it 'records a journey' do
-  #   log.start(station1)
-  #   allow(journey).to receive(:in_journey?) { true }
-  #   log.finish(station2)
-  #   expect(log.journeys.last).to eq journey
-  # end
+  it 'records a journey' do
+    log.start(station1)
+    log.finish(station2)
+    expect(log.journeys.last.exit_station).to eq station2
+  end
 
 end
