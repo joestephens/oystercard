@@ -13,8 +13,14 @@ class JourneyLog
   end
 
   def finish(station)
-    @journey.finish(station)
-    @journey = Journey.new
+    if @journey.entry_station == nil
+      @journey = Journey.new
+      @journey.finish(station)
+      @journey = Journey.new
+    else
+      @journey.finish(station)
+      @journey = Journey.new
+    end
   end
 
   def in_journey?
