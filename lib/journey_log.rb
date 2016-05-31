@@ -7,29 +7,22 @@ class JourneyLog
   end
 
   def start(station)
-    @journey = Journey.new if !@journey.entry_station.nil?
-    @journey.start(station)
-    @journeys << @journey
+    @journeys << @journey.finish(nil) if in_journey?
+    @journey = Journey.new(station)
   end
 
   def finish(station)
-    if @journey.entry_station == nil
-      @journey = Journey.new
-      @journey.finish(station)
-      @journey = Journey.new
-    else
-      @journey.finish(station)
-      @journey = Journey.new
-    end
+    return @journeys << @journey.finish(station) if in_journey?
+    @journey = Journey.new(nil)
+    @journeys << @journey.finish(station)
   end
 
   def in_journey?
     @journey.in_journey?
   end
 
-  private
-
-    def current_journey
-      @journey
-    end
+  #What is current_journey for??
+  def current_journey
+    in_journey? ? @journey : @journey = Journey.new
+  end
 end

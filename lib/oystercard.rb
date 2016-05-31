@@ -1,12 +1,11 @@
 require_relative 'journey'
 require_relative 'journey_log'
+require_relative 'station'
 
 class Oystercard
-
-attr_reader :balance, :log
-
-LIMIT = 90
-MIN_BALANCE = 1
+  attr_reader :balance, :log
+  LIMIT = 90
+  MIN_BALANCE = 1
 
   def initialize(log = JourneyLog.new)
     @balance = 0
@@ -25,14 +24,12 @@ MIN_BALANCE = 1
   end
 
   def touch_out(station)
-    deduct unless @log.in_journey?
     @log.finish(station)
     deduct
   end
 
   private
-    def deduct(fare = MIN_BALANCE)
+    def deduct
       @balance -= @log.journey.fare
     end
-
 end
