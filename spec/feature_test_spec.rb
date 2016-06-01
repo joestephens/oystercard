@@ -13,6 +13,10 @@ describe "Feature Tests" do
     oystercard.journeys
     station = Station.new("Waterloo", 1)
 
+    journey = Journey.new("Waterloo", "Bank")
+    oystercard.touch_in(journey)
+
+
 
   end
 end

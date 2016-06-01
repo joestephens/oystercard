@@ -18,11 +18,6 @@ describe Oystercard do
 
     end
 
-    describe 'initial journey status' do
-      it 'has an empty list of journeys by default' do
-        expect(oystercard.journeys).to be_empty
-      end
-    end
   end
 
   describe '#top_up' do
@@ -42,11 +37,6 @@ describe Oystercard do
   describe '#touch_in' do
     it '#oystercard.balance >= minimum balance in order to touch_in' do
       expect { oystercard.touch_in(entry_station) }.to raise_error('Balance too low to enter')
-    end
-
-    it 'oystercard.in_journey = true after #touch_in' do
-      oystercard.top_up(minimum_fare)
-      expect { oystercard.touch_in(entry_station) }.to change{ oystercard.in_journey?}.to true
     end
 
     it "should save entry station" do

@@ -7,8 +7,6 @@ MINIMUM_FARE = 1
 
   def initialize
     @balance = 0
-    @entry_station = nil
-    @journeys = {}
   end
 
   def top_up(money)
@@ -18,20 +16,17 @@ MINIMUM_FARE = 1
 
   def touch_in(station)
     fail 'Balance too low to enter' if low_balance
-    @entry_station = station
-    @journeys[:entry_station] = station
+    @current_journey = Journey.new(station)
   end
 
   def touch_out(station)
-    deduct
+    deduct()
     @exit_station = station
     @entry_station = nil
     @journeys[:exit_station] = station
   end
 
-  def in_journey?
-    !!@entry_station
-  end
+
 
   private
 
@@ -43,7 +38,7 @@ MINIMUM_FARE = 1
     balance < MINIMUM_FARE
   end
 
-  def deduct
+  def deduct()
     @balance -= MINIMUM_FARE
   end
 
