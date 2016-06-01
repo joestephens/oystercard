@@ -11,6 +11,7 @@ describe "Feature Tests" do
     oystercard.touch_in(entry_station)
     oystercard.touch_out(exit_station)
     oystercard.journeys
+    station = Station.new("Waterloo", 1)
 
 
   end
