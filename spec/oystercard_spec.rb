@@ -27,8 +27,6 @@ describe Oystercard do
 
   describe '#top_up' do
 
-    it { is_expected.to respond_to(:top_up).with(1).argument }
-
     it 'should increase the balance by the amount given' do
       expect{ oystercard.top_up 1 }.to change{ oystercard.balance }.by 1
     end
@@ -49,43 +47,45 @@ describe Oystercard do
       expect { oystercard.touch_in(entry_station) }.to change{ oystercard.in_journey?}.to true
     end
 
-    it "should save entry station" do
+    # it "should save entry station" do
+    #   oystercard.top_up(minimum_fare)
+    #   expect { oystercard.touch_in(entry_station)}.to change { oystercard.entry_station }.to entry_station
+    # end
+
+    it 'should save entry station' do
       oystercard.top_up(minimum_fare)
-      expect { oystercard.touch_in(entry_station)}.to change { oystercard.entry_station }.to entry_station
+      oystercard.touch_in(entry_station)
+      expect(oystercard.current_journey[:entry_station]).to eq entry_station
     end
 
   end
 
   describe '#touch_out' do
-    it 'oystercard.in_journey = false after #touch_out' do
+    before(:each) do
       oystercard.top_up(minimum_fare)
       oystercard.touch_in(entry_station)
+    end
+
+    it 'oystercard.in_journey = false after #touch_out' do
       expect { oystercard.touch_out(exit_station) }.to change{ oystercard.in_journey?}.to false
     end
 
     it 'deducts minimum fare from balance on touch out' do
-      oystercard.top_up(minimum_fare)
-      oystercard.touch_in(entry_station)
       expect { oystercard.touch_out(exit_station) }.to change { oystercard.balance }.by -minimum_fare
     end
 
-    it "forgets entry station upon touch out" do
-      oystercard.top_up(minimum_fare)
-      oystercard.touch_in(entry_station)
-      expect { oystercard.touch_out(exit_station) }.to change { oystercard.entry_station }.to nil
+    it "resets current journey to empty hash on touch out" do
+      oystercard.touch_out(exit_station)
+      expect(oystercard.current_journey).to be_empty
     end
 
     it 'should save exit station' do
-      oystercard.top_up(minimum_fare)
-      oystercard.touch_in(entry_station)
       oystercard.touch_out(exit_station)
-      expect(oystercard.exit_station).to be exit_station
+      expect(oystercard.journeys.last[:exit_station]).to be exit_station
     end
 
     let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
     it 'saves a journey' do
-      oystercard.top_up(minimum_fare)
-      oystercard.touch_in(entry_station)
       oystercard.touch_out(exit_station)
       expect(oystercard.journeys).to include journey
     end
