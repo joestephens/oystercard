@@ -8,3 +8,7 @@ class Station
   end
 
 end
+
+  def initialize(entry_station=nil)
+     @entry_station = entry_station
+  end
